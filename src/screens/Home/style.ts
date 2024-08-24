@@ -2,7 +2,7 @@ import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
     container: {
-        height: '100%',
+        flex: 1,
         backgroundColor: '#1A1A1A',
     },
     header: {
@@ -17,6 +17,7 @@ export const styles = StyleSheet.create({
         width: 110
     },
     body: {
+        flex: 1,
         paddingHorizontal: 24
     },
     form: {
@@ -67,7 +68,8 @@ export const styles = StyleSheet.create({
     status: {
         height: 19,
         justifyContent: 'space-between',
-        flexDirection: 'row'
+        flexDirection: 'row',
+        marginBottom: 20
     },
     eachStatus: {
         flexDirection: 'row',
@@ -75,7 +77,7 @@ export const styles = StyleSheet.create({
         alignItems: 'center'
     },
     text: {
-        fontSize: 14,
+        fontSize: 15,
         fontWeight: 'bold'
     },
     numberBackground: {
@@ -91,7 +93,6 @@ export const styles = StyleSheet.create({
     },
     flatlist: {
         height: 208,
-        marginTop: 20,
         alignItems: 'center',
         flexDirection: 'column',
     },
