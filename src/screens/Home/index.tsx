@@ -1,35 +1,42 @@
-import { Text, TextInput, Image, View, TouchableOpacity, FlatList, ScrollView} from 'react-native';
+import { Text, TextInput, Image, View, TouchableOpacity, FlatList } from 'react-native';
 import { styles } from './style';
 import { Tasks } from '../../components/Tasks';
 import React, { useState } from 'react';
 
 export default function Home() {
-    const [tasks, setTasks] = useState<string[]>([]);
+    const [tasks, setTasks] = useState<{ name: string, isCompleted: boolean }[]>([]);
     const [taskName, setTaskName] = useState('');
-    const [completedTasks, setCompletedTasks] = useState(0); 
+    const [completedTasks, setCompletedTasks] = useState(0);
 
     function handleTaskAdd() {
-        setTasks(prevState => [...prevState, taskName]);
+        setTasks(prevState => [...prevState, { name: taskName, isCompleted: false }]);
         setTaskName('');
     }
 
-    function handleTaskRemove(tittle: string) {
-        setTasks(prevState => prevState.filter(task => task !== tittle))   
-        
+    function handleTaskRemove(taskName: string) {
+        setTasks(prevState => {
+            const updatedTasks = prevState.filter(task => task.name !== taskName);
+            const completedCount = updatedTasks.filter(task => task.isCompleted).length;
+            setCompletedTasks(completedCount);
+            return updatedTasks;
+        });
     }
 
-    function handleToggleTask(isDone: boolean) {
-        if (isDone) {
-            setCompletedTasks(completedTasks + 1)
-        } else {
-            setCompletedTasks(completedTasks - 1); 
-        }
+    function handleToggleTask(taskName: string) {
+        setTasks(prevState => {
+            const updatedTasks = prevState.map(task =>
+                task.name === taskName ? { ...task, isCompleted: !task.isCompleted } : task
+            );
+            const completedCount = updatedTasks.filter(task => task.isCompleted).length;
+            setCompletedTasks(completedCount);
+            return updatedTasks;
+        });
     }
 
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Image style={styles.logo} source={require('../../../assets/logo.png')}/>
+                <Image style={styles.logo} source={require('../../../assets/logo.png')} />
             </View>
             <View style={styles.body}>
                 <View style={styles.form}>
@@ -62,24 +69,25 @@ export default function Home() {
                         </View>
                     </View>
                 </View>
-                <FlatList 
+                <FlatList
                     data={tasks}
-                    keyExtractor={item => item}
+                    keyExtractor={item => item.name}
                     renderItem={({ item }) => (
-                        <Tasks 
-                            key={item}
-                            taskName={item}
-                            onRemove={() => handleTaskRemove(item)}
-                            onToggle={(isDone: boolean) => handleToggleTask(isDone)}
+                        <Tasks
+                            key={item.name}
+                            taskName={item.name}
+                            isCompleted={item.isCompleted}
+                            onRemove={() => handleTaskRemove(item.name)}
+                            onToggle={() => handleToggleTask(item.name)}
                         />
                     )}
                     ListEmptyComponent={() => (
                         <View style={styles.flatlist}>
                             <View style={styles.line}></View>
-                            <Image style={styles.emptyList} source={require('../../../assets/lista-vazia.png')}/>
+                            <Image style={styles.emptyList} source={require('../../../assets/lista-vazia.png')} />
                             <Text style={styles.text1}>Você ainda não tem tarefas cadastradas</Text>
                             <Text style={styles.text2}>Crie tarefas e organize seus itens a fazer</Text>
-                        </View>                    
+                        </View>
                     )}
                 />
             </View>
